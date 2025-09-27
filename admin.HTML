@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - كلية الطب البيطري</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --vet-green: #27ae60;
+            --vet-blue: #2980b9;
+        }
+
+        * {
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--vet-blue) 100%) !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, var(--vet-blue) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .sidebar-nav {
+            padding: 0;
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .sidebar-nav li:last-child {
+            border-bottom: none;
+        }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 15px 20px;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f0f7ff 100%);
+            color: var(--vet-blue);
+            border-right: 4px solid var(--vet-blue);
+            transform: translateX(-5px);
+        }
+
+        .sidebar-nav a i {
+            margin-left: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--vet-blue) 0%, var(--primary-color) 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 15px 20px;
+            font-weight: 600;
+        }
+
+        .stats-card {
+            text-align: center;
+            padding: 25px 15px;
+            border-radius: 12px;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-card i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .stats-card h3 {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .stats-card p {
+            margin-bottom: 0;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .table th {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: var(--primary-color);
+            border: none;
+            padding: 15px;
+            font-weight: 600;
+        }
+
+        .table td {
+            padding: 12px 15px;
+            vertical-align: middle;
+            border-color: #f0f0f0;
+        }
+
+        .table tbody tr:hover {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%);
+            transform: scale(1.01);
+            transition: all 0.3s ease;
+        }
+
+        .password-display {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .first-char {
+            color: var(--vet-green);
+            font-size: 1.2em;
+            text-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);
+        }
+
+        .floating-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: slideInRight 0.5s ease;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .tab-content {
+            padding: 20px 0;
+        }
+
+        .tab-pane {
+            animation: fadeIn 0.5s ease;
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .signature {
+            position: relative;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            overflow: hidden;
+        }
+
+        .signature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 0%, rgba(255,255,255,0.1) 100%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .signature-text {
+            position: relative;
+            z-index: 2;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* تصميم الطباعة */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printable-area, #printable-area * {
+                visibility: visible;
+            }
+            #printable-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .page-break {
+                page-break-after: always;
+            }
+            .student-print-card {
+                border: 1px solid #333;
+                border-radius: 5px;
+                padding: 10px;
+                margin-bottom: 10px;
+                page-break-inside: avoid;
+            }
+        }
+
+        .print-preview .student-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+        }
+
+        .print-preview .student-card h6 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-cogs me-2"></i>لوحة تحكم الإدارة - كلية الطب البيطري
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="text-light me-3" id="current-date"></span>
+                <a href="index.html" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-home me-1"></i>العودة للرئيسية
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="container mt-4">
+        <div class="row">
+            <!-- الشريط الجانبي -->
+            <div class="col-lg-3">
+                <div class="sidebar">
+                    <div class="sidebar-header">
+                        <h5 class="mb-0"><i class="fas fa-tachometer-alt me-2"></i>لوحة التحكم</h5>
+                    </div>
+                    <ul class="sidebar-nav">
+                        <li><a href="#" class="active" data-tab="dashboard"><i class="fas fa-chart-line"></i>الإحصائيات</a></li>
+                        <li><a href="#" data-tab="students"><i class="fas fa-user-graduate"></i>إدارة الطلاب</a></li>
+                        <li><a href="#" data-tab="upload"><i class="fas fa-file-excel"></i>رفع ملف Excel</a></li>
+                        <li><a href="#" data-tab="announcements"><i class="fas fa-bullhorn"></i>الإعلانات</a></li>
+                        <li><a href="#" data-tab="files"><i class="fas fa-file-upload"></i>الملفات</a></li>
+                        <li><a href="#" data-tab="logs"><i class="fas fa-history"></i>سجلات البحث</a></li>
+                        <li><a href="#" data-tab="print"><i class="fas fa-print"></i>الطباعة</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- المحتوى -->
+            <div class="col-lg-9">
+                <!-- لوحة الإحصائيات -->
+                <div id="dashboard" class="tab-pane active">
+                    <h3 class="mb-4"><i class="fas fa-chart-line me-2"></i>الإحصائيات العامة</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="stats-card" style="background: linear-gradient(135deg, var(--vet-blue) 0%, #3498db 100%);">
+                                <i class="fas fa-users"></i>
+                                <h3 id="total-students">0</h3>
+                                <p>إجمالي الطلاب</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card" style="background: linear-gradient(135deg, var(--vet-green) 0%, #2ecc71 100%);">
+                                <i class="fas fa-bullhorn"></i>
+                                <h3 id="total-announcements">0</h3>
+                                <p>عدد الإعلانات</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card" style="background: linear-gradient(135deg, var(--warning-color) 0%, #f1c40f 100%);">
+                                <i class="fas fa-file"></i>
+                                <h3 id="total-files">0</h3>
+                                <p>الملفات المرفوعة</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card" style="background: linear-gradient(135deg, var(--danger-color) 0%, #c0392b 100%);">
+                                <i class="fas fa-search"></i>
+                                <h3 id="total-searches">0</h3>
+                                <p>عمليات البحث</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-clock me-2"></i>آخر عمليات البحث</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>الرقم القومي</th>
+                                            <th>اسم الطالب</th>
+                                            <th>الحالة</th>
+                                            <th>التاريخ والوقت</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recent-searches">
+                                        <!-- سيتم ملؤها بالبيانات -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- إدارة الطلاب -->
+                <div id="students" class="tab-pane">
+                    <h3 class="mb-4"><i class="fas fa-user-graduate me-2"></i>إدارة الطلاب</h3>
+                    
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">قائمة الطلاب</h5>
+                            <div>
+                                <button class="btn btn-success btn-sm me-2" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                                    <i class="fas fa-plus me-1"></i>إضافة طالب
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteAllStudents()">
+                                    <i class="fas fa-trash me-1"></i>حذف الكل
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>الرقم القومي</th>
+                                            <th>الاسم</th>
+                                            <th>الفرقة</th>
+                                            <th>الكود</th>
+                                            <th>البريد</th>
+                                            <th>كلمة المرور</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="students-table">
+                                        <!-- سيتم ملؤها بالبيانات -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- رفع ملف Excel -->
+                <div id="upload" class="tab-pane">
+                    <h3 class="mb-4"><i class="fas fa-file-excel me-2"></i>رفع ملف Excel</h3>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">رفع بيانات الطلاب</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info">
+                                <strong><i class="fas fa-info-circle me-2"></i>تعليمات:</strong> يجب أن يحتوي الملف على الأعمدة التالية بالترتيب:
+                                nationalId, name, grade, code, email, password, cources, card
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">اختر ملف Excel</label>
+                                <input type="file" id="excel-file" accept=".xlsx, .xls" class="form-control">
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                <button id="upload-btn" class="btn btn-primary" disabled>
+                                    <i class="fas fa-upload me-2"></i>رفع الملف
+                                </button>
+                                <button id="download-template" class="btn btn-outline-secondary">
+                                    <i class="fas fa-download me-2"></i>تحميل النموذج
+                                </button>
+                            </div>
+                            
+                            <div id="upload-progress" class="mt-3" style="display: none;">
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
+                                </div>
+                                <div class="text-center mt-2" id="progress-text">0%</div>
+                            </div>
+                            
+                            <div id="upload-results" class="mt-4" style="display: none;">
+                                <h5><i class="fas fa-list me-2"></i>نتائج الرفع:</h5>
+                                <div id="results-list" class="mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الإعلانات -->
+                <div id="announcements" class="tab-pane">
+                    <h3 class="mb-4"><i class="fas fa-bullhorn me-2"></i>إدارة الإعلانات</h3>
+                    
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">الإعلانات</h5>
+                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addAnnouncementModal">
+                                <i class="fas fa-plus me-1"></i>إضافة إعلان
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>العنوان</th>
+                                            <th>المحتوى</th>
+                                            <th>التاريخ</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="announcements-table">
+                                        <!-- سيتم ملؤها بالبيانات -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الملفات -->
+                <div id="files" class="tab-pane">
+                    <h3 class="mb-4"><i class="fas fa-file-upload me-2"></i>إدارة الملفات</h3>
+                    
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">الملفات</h5>
+                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addFileModal">
+                                <i class="fas fa-plus me-1"></i>إضافة ملف
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>اسم الملف</th>
+                                            <th>رابط التحميل</th>
+                                            <th>التاريخ</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="files-table">
+                                        <!-- سيتم ملؤها بالبيانات -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- سجلات البحث -->
+                <div id="logs" class="tab-pane">
+                    <h3 class="mb-4"><i class="fas fa-history me-2"></i>سجلات البحث</h3>
+                    
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">سجلات عمليات البحث</h5>
+                            <button class="btn btn-danger btn-sm" onclick="deleteAllLogs()">
+                                <i class="fas fa-trash me-1"></i>حذف جميع السجلات
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>الرقم القومي</th>
+                                            <th>اسم الطالب</th>
+                                            <th>الحالة</th>
+                                            <th>التاريخ والوقت</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="logs-table">
+                                        <!-- سيتم ملؤها بالبيانات -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الطباعة -->
+                <div id="print" class="tab-pane">
+                    <h3 class="mb-4"><i class="fas fa-print me-2"></i>طباعة بيانات الطلاب</h3>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">إعدادات الطباعة</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">اختر الفرقة للطباعة</label>
+                                    <select class="form-control" id="print-grade">
+                                        <option value="all">جميع الطلاب</option>
+                                        <option value="الإعدادية">الإعدادية</option>
+                                        <option value="الأولى">الأولى</option>
+                                        <option value="الثانية">الثانية</option>
+                                        <option value="الثالثة">الثالثة</option>
+                                        <option value="الرابعة">الرابعة</option>
+                                        <option value="الخامسة">الخامسة</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">&nbsp;</label>
+                                    <button class="btn btn-primary w-100" onclick="generatePrintData()">
+                                        <i class="fas fa-print me-2"></i>عرض البيانات للطباعة
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div id="print-preview" style="display: none;">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    سيتم عرض 60 طالب في كل صفحة. اضغط على زر الطباعة عندما تكون جاهزاً.
+                                </div>
+                                <button class="btn btn-success mb-3 no-print" onclick="printData()">
+                                    <i class="fas fa-print me-2"></i>طباعة البيانات
+                                </button>
+                                <div id="print-content" class="print-preview"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- منطقة الطباعة المخفية -->
+    <div id="printable-area" class="printable-area" style="display: none;"></div>
+
+    <!-- Modal إضافة طالب -->
+    <div class="modal fade" id="addStudentModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">إضافة طالب جديد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="studentForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">الرقم القومي</label>
+                                    <input type="text" class="form-control" id="studentNationalId" required maxlength="14">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">الاسم الكامل</label>
+                                    <input type="text" class="form-control" id="studentName" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">الفرقة</label>
+                                    <select class="form-control" id="studentGrade" required>
+                                        <option value="">اختر الفرقة</option>
+                                        <option value="الإعدادية">الإعدادية</option>
+                                        <option value="الأولى">الأولى</option>
+                                        <option value="الثانية">الثانية</option>
+                                        <option value="الثالثة">الثالثة</option>
+                                        <option value="الرابعة">الرابعة</option>
+                                        <option value="الخامسة">الخامسة</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">الكود</label>
+                                    <input type="text" class="form-control" id="studentCode" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">البريد الجامعي</label>
+                                    <input type="email" class="form-control" id="studentEmail" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">كلمة المرور</label>
+                                    <input type="text" class="form-control" id="studentPassword" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">مصاريف الكتب والمنصة (جنيه)</label>
+                                    <input type="number" class="form-control" id="studentCources" value="0">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">المصاريف الدراسية (جنيه)</label>
+                                    <input type="number" class="form-control" id="studentCard" value="0">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" id="saveStudent">حفظ الطالب</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal إضافة إعلان -->
+    <div class="modal fade" id="addAnnouncementModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">إضافة إعلان جديد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">عنوان الإعلان</label>
+                            <input type="text" class="form-control" id="announcementTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">محتوى الإعلان</label>
+                            <textarea class="form-control" id="announcementContent" rows="4" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" id="saveAnnouncement">حفظ الإعلان</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal إضافة ملف -->
+    <div class="modal fade" id="addFileModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">إضافة ملف جديد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">اسم الملف</label>
+                            <input type="text" class="form-control" id="fileName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">رابط التحميل</label>
+                            <input type="url" class="form-control" id="fileUrl" required placeholder="https://example.com/file.pdf">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" id="saveFile">حفظ الملف</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- التوقيع المتحرك -->
+    <div class="container">
+        <div class="signature">
+            <div class="text-center signature-text">
+                <i class="fas fa-code me-2"></i>تصميم وتنفيذ: مهندس بولس سمير - مدير وحدة تكنولوجيا المعلومات
+                <br>
+                <small>نظام معلومات الطالب - كلية الطب البيطري - جامعة المنيا</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script>
+        // تهيئة Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDvZgP6u7TGQCopxqUhMqmh58KKmGNE6M4",
+            authDomain: "bolestest.firebaseapp.com",
+            databaseURL: "https://bolestest-default-rtdb.firebaseio.com",
+            projectId: "bolestest",
+            storageBucket: "bolestest.firebasestorage.app",
+            messagingSenderId: "536112616180",
+            appId: "1:536112616180:web:62ee559d215db72a9844a1",
+            measurementId: "G-3PEQ93VFHR"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // المتغيرات العامة
+        let currentTab = 'dashboard';
+        let currentPrintData = [];
+
+        // عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            // عرض التاريخ
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('ar-EG', options);
+            
+            // تحميل البيانات الأولية
+            loadDashboard();
+            
+            // إعداد أحداث التنقل بين التبويبات
+            setupTabNavigation();
+            
+            // إعداد أحداث الأزرار
+            setupEventListeners();
+        });
+
+        // إعداد التنقل بين التبويبات
+        function setupTabNavigation() {
+            document.querySelectorAll('.sidebar-nav a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const tabName = this.getAttribute('data-tab');
+                    switchTab(tabName);
+                    
+                    // تحديث التبويب النشط
+                    document.querySelectorAll('.sidebar-nav a').forEach(nav => {
+                        nav.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            });
+        }
+
+        // التبديل بين التبويبات
+        function switchTab(tabName) {
+            // إخفاء جميع التبويبات
+            document.querySelectorAll('.tab-pane').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // إظهار التبويب المحدد
+            document.getElementById(tabName).classList.add('active');
+            currentTab = tabName;
+            
+            // تحميل بيانات التبويب
+            switch(tabName) {
+                case 'dashboard':
+                    loadDashboard();
+                    break;
+                case 'students':
+                    loadStudents();
+                    break;
+                case 'announcements':
+                    loadAnnouncements();
+                    break;
+                case 'files':
+                    loadFiles();
+                    break;
+                case 'logs':
+                    loadLogs();
+                    break;
+                case 'print':
+                    document.getElementById('print-preview').style.display = 'none';
+                    break;
+            }
+        }
+
+        // إعداد أحداث الأزرار
+        function setupEventListeners() {
+            // إدارة الطلاب
+            document.getElementById('saveStudent').addEventListener('click', addStudent);
+            
+            // رفع ملف Excel
+            document.getElementById('excel-file').addEventListener('change', function() {
+                document.getElementById('upload-btn').disabled = !this.files.length;
+            });
+            document.getElementById('upload-btn').addEventListener('click', uploadExcel);
+            document.getElementById('download-template').addEventListener('click', downloadTemplate);
+            
+            // الإعلانات
+            document.getElementById('saveAnnouncement').addEventListener('click', addAnnouncement);
+            
+            // الملفات
+            document.getElementById('saveFile').addEventListener('click', addFile);
+        }
+
+        // تحميل لوحة التحكم
+        function loadDashboard() {
+            // عدد الطلاب
+            database.ref('students').once('value').then(snapshot => {
+                document.getElementById('total-students').textContent = snapshot.exists() ? snapshot.numChildren() : 0;
+            });
+            
+            // عدد الإعلانات
+            database.ref('announcements').once('value').then(snapshot => {
+                document.getElementById('total-announcements').textContent = snapshot.exists() ? snapshot.numChildren() : 0;
+            });
+            
+            // عدد الملفات
+            database.ref('files').once('value').then(snapshot => {
+                document.getElementById('total-files').textContent = snapshot.exists() ? snapshot.numChildren() : 0;
+            });
+            
+            // عدد عمليات البحث
+            database.ref('searchLogs').once('value').then(snapshot => {
+                document.getElementById('total-searches').textContent = snapshot.exists() ? snapshot.numChildren() : 0;
+            });
+            
+            // آخر عمليات البحث (من الأحدث إلى الأقدم)
+            database.ref('searchLogs').orderByChild('timestamp').limitToLast(10).once('value').then(snapshot => {
+                const tbody = document.getElementById('recent-searches');
+                tbody.innerHTML = '';
+                
+                if (snapshot.exists()) {
+                    const logs = [];
+                    snapshot.forEach(childSnapshot => {
+                        logs.push({ key: childSnapshot.key, ...childSnapshot.val() });
+                    });
+                    
+                    // عكس الترتيب لعرض الأحدث أولاً
+                    logs.reverse().forEach(log => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${log.nationalId}</td>
+                            <td>${log.studentName}</td>
+                            <td><span class="badge ${log.found ? 'bg-success' : 'bg-danger'}">${log.found ? 'موجود' : 'غير موجود'}</span></td>
+                            <td>${new Date(log.timestamp).toLocaleString('ar-EG')}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">لا توجد سجلات</td></tr>';
+                }
+            });
+        }
+
+        // تحميل قائمة الطلاب
+        function loadStudents() {
+            database.ref('students').once('value').then(snapshot => {
+                const tbody = document.getElementById('students-table');
+                tbody.innerHTML = '';
+                
+                if (snapshot.exists()) {
+                    snapshot.forEach(childSnapshot => {
+                        const student = childSnapshot.val();
+                        const password = student.password || '';
+                        let passwordHTML = '';
+                        
+                        if (password) {
+                            for (let i = 0; i < password.length; i++) {
+                                if (i === 0) {
+                                    passwordHTML += `<span class="first-char">${password[i]}</span>`;
+                                } else {
+                                    passwordHTML += password[i];
+                                }
+                            }
+                        }
+                        
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${student.nationalId}</td>
+                            <td>${student.name}</td>
+                            <td>${student.grade}</td>
+                            <td>${student.code}</td>
+                            <td>${student.email}</td>
+                            <td class="password-display">${passwordHTML}</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" onclick="deleteStudent('${childSnapshot.key}')">
+                                    <i class="fas fa-trash"></i> حذف
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center">لا توجد بيانات طلاب</td></tr>';
+                }
+            });
+        }
+
+        // إضافة طالب جديد
+        function addStudent() {
+            const nationalId = document.getElementById('studentNationalId').value.trim();
+            const name = document.getElementById('studentName').value.trim();
+            const grade = document.getElementById('studentGrade').value;
+            const code = document.getElementById('studentCode').value.trim();
+            const email = document.getElementById('studentEmail').value.trim();
+            const password = document.getElementById('studentPassword').value.trim();
+            const cources = parseInt(document.getElementById('studentCources').value) || 0;
+            const card = parseInt(document.getElementById('studentCard').value) || 0;
+            
+            if (nationalId.length !== 14 || isNaN(nationalId)) {
+                showNotification('الرجاء إدخال رقم قومي صحيح مكون من 14 رقمًا', 'error');
+                return;
+            }
+            
+            if (!name || !grade || !code || !email || !password) {
+                showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
+                return;
+            }
+            
+            const studentData = {
+                nationalId: nationalId,
+                name: name,
+                grade: grade,
+                code: code,
+                email: email,
+                password: password,
+                cources: cources,
+                card: card,
+                timestamp: Date.now()
+            };
+            
+            database.ref('students/' + nationalId).set(studentData)
+                .then(() => {
+                    showNotification('تم حفظ الطالب بنجاح', 'success');
+                    
+                    // استخدام Bootstrap modal بدلاً من jQuery
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addStudentModal'));
+                    modal.hide();
+                    
+                    document.getElementById('studentForm').reset();
+                    loadStudents();
+                    loadDashboard();
+                })
+                .catch(error => {
+                    showNotification('حدث خطأ أثناء حفظ الطالب', 'error');
+                    console.error('Error:', error);
+                });
+        }
+
+        // حذف طالب
+        function deleteStudent(studentId) {
+            if (confirm('هل أنت متأكد من حذف هذا الطالب؟')) {
+                database.ref('students/' + studentId).remove()
+                    .then(() => {
+                        showNotification('تم حذف الطالب بنجاح', 'success');
+                        loadStudents();
+                        loadDashboard();
+                    })
+                    .catch(error => {
+                        showNotification('حدث خطأ أثناء حذف الطالب', 'error');
+                    });
+            }
+        }
+
+        // حذف جميع الطلاب
+        function deleteAllStudents() {
+            if (confirm('هل أنت متأكد من حذف جميع بيانات الطلاب؟ هذا الإجراء لا يمكن التراجع عنه!')) {
+                database.ref('students').remove()
+                    .then(() => {
+                        showNotification('تم حذف جميع بيانات الطلاب بنجاح', 'success');
+                        loadStudents();
+                        loadDashboard();
+                    })
+                    .catch(error => {
+                        showNotification('حدث خطأ أثناء حذف البيانات', 'error');
+                    });
+            }
+        }
+
+        // رفع ملف Excel
+        function uploadExcel() {
+            const fileInput = document.getElementById('excel-file');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showNotification('الرجاء اختيار ملف Excel', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+                    
+                    processExcelData(jsonData);
+                } catch (error) {
+                    showNotification('خطأ في قراءة ملف Excel', 'error');
+                    console.error('Error:', error);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // معالجة بيانات Excel
+        function processExcelData(data) {
+            const progressBar = document.querySelector('#upload-progress .progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const resultsList = document.getElementById('results-list');
+            
+            document.getElementById('upload-progress').style.display = 'block';
+            document.getElementById('upload-results').style.display = 'block';
+            resultsList.innerHTML = '';
+            
+            let successCount = 0;
+            let errorCount = 0;
+            let processed = 0;
+            const total = data.length;
+            
+            data.forEach((row, index) => {
+                // التحقق من البيانات المطلوبة
+                if (!row.nationalId || row.nationalId.toString().length !== 14) {
+                    resultsList.innerHTML += `<div class="alert alert-danger py-2 mb-2">❌ صف ${index + 1}: رقم قومي غير صالح</div>`;
+                    errorCount++;
+                    processed++;
+                    updateProgress();
+                    return;
+                }
+                
+                if (!row.password) {
+                    resultsList.innerHTML += `<div class="alert alert-danger py-2 mb-2">❌ صف ${index + 1}: كلمة مرور مفقودة</div>`;
+                    errorCount++;
+                    processed++;
+                    updateProgress();
+                    return;
+                }
+                
+                const studentData = {
+                    nationalId: row.nationalId.toString(),
+                    name: row.name || '',
+                    grade: row.grade || '',
+                    code: row.code || '',
+                    email: row.email || '',
+                    password: row.password || '',
+                    cources: parseInt(row.cources) || 0,
+                    card: parseInt(row.card) || 0,
+                    timestamp: Date.now()
+                };
+                
+                database.ref('students/' + studentData.nationalId).set(studentData)
+                    .then(() => {
+                        resultsList.innerHTML += `<div class="alert alert-success py-2 mb-2">✅ صف ${index + 1}: تم إضافة ${studentData.name} بنجاح</div>`;
+                        successCount++;
+                    })
+                    .catch(error => {
+                        resultsList.innerHTML += `<div class="alert alert-danger py-2 mb-2">❌ صف ${index + 1}: خطأ في الحفظ</div>`;
+                        errorCount++;
+                    })
+                    .finally(() => {
+                        processed++;
+                        updateProgress();
+                    });
+            });
+            
+            function updateProgress() {
+                const progress = (processed / total) * 100;
+                progressBar.style.width = progress + '%';
+                progressText.textContent = `${Math.round(progress)}% (${processed}/${total})`;
+                
+                if (processed === total) {
+                    showNotification(`تم الانتهاء: ${successCount} نجاح, ${errorCount} فشل`, 'info');
+                    loadStudents();
+                    loadDashboard();
+                    
+                    // إعادة تعيين الحقول
+                    document.getElementById('excel-file').value = '';
+                    document.getElementById('upload-btn').disabled = true;
+                }
+            }
+        }
+
+        // تحميل نموذج Excel
+        function downloadTemplate() {
+            const templateData = [{
+                nationalId: '29809012400538',
+                name: 'طالب نموذجي',
+                grade: 'الخامسة',
+                code: '100019948',
+                email: '100019948@vet.s-mu.edu.eg',
+                password: 'Eeizlo',
+                cources: 800,
+                card: 1500
+            }];
+            
+            const worksheet = XLSX.utils.json_to_sheet(templateData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'الطلاب');
+            XLSX.writeFile(workbook, 'نموذج_بيانات_الطلاب.xlsx');
+            showNotification('تم تحميل النموذج بنجاح', 'success');
+        }
+
+        // تحميل الإعلانات
+        function loadAnnouncements() {
+            database.ref('announcements').orderByChild('timestamp').once('value').then(snapshot => {
+                const tbody = document.getElementById('announcements-table');
+                tbody.innerHTML = '';
+                
+                if (snapshot.exists()) {
+                    snapshot.forEach(childSnapshot => {
+                        const announcement = childSnapshot.val();
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${announcement.title}</td>
+                            <td>${announcement.content}</td>
+                            <td>${new Date(announcement.timestamp).toLocaleDateString('ar-EG')}</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" onclick="deleteAnnouncement('${childSnapshot.key}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">لا توجد إعلانات</td></tr>';
+                }
+            });
+        }
+
+        // إضافة إعلان
+        function addAnnouncement() {
+            const title = document.getElementById('announcementTitle').value.trim();
+            const content = document.getElementById('announcementContent').value.trim();
+            
+            if (!title || !content) {
+                showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
+                return;
+            }
+            
+            const announcementData = {
+                title: title,
+                content: content,
+                timestamp: Date.now()
+            };
+            
+            database.ref('announcements').push(announcementData)
+                .then(() => {
+                    showNotification('تم حفظ الإعلان بنجاح', 'success');
+                    
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addAnnouncementModal'));
+                    modal.hide();
+                    
+                    document.getElementById('announcementTitle').value = '';
+                    document.getElementById('announcementContent').value = '';
+                    loadAnnouncements();
+                    loadDashboard();
+                })
+                .catch(error => {
+                    showNotification('حدث خطأ أثناء حفظ الإعلان', 'error');
+                });
+        }
+
+        // حذف إعلان
+        function deleteAnnouncement(announcementId) {
+            if (confirm('هل أنت متأكد من حذف هذا الإعلان؟')) {
+                database.ref('announcements/' + announcementId).remove()
+                    .then(() => {
+                        showNotification('تم حذف الإعلان بنجاح', 'success');
+                        loadAnnouncements();
+                        loadDashboard();
+                    })
+                    .catch(error => {
+                        showNotification('حدث خطأ أثناء حذف الإعلان', 'error');
+                    });
+            }
+        }
+
+        // تحميل الملفات
+        function loadFiles() {
+            database.ref('files').orderByChild('timestamp').once('value').then(snapshot => {
+                const tbody = document.getElementById('files-table');
+                tbody.innerHTML = '';
+                
+                if (snapshot.exists()) {
+                    snapshot.forEach(childSnapshot => {
+                        const file = childSnapshot.val();
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${file.name}</td>
+                            <td><a href="${file.downloadUrl}" target="_blank">${file.downloadUrl}</a></td>
+                            <td>${new Date(file.timestamp).toLocaleDateString('ar-EG')}</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" onclick="deleteFile('${childSnapshot.key}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">لا توجد ملفات</td></tr>';
+                }
+            });
+        }
+
+        // إضافة ملف
+        function addFile() {
+            const name = document.getElementById('fileName').value.trim();
+            const url = document.getElementById('fileUrl').value.trim();
+            
+            if (!name || !url) {
+                showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
+                return;
+            }
+            
+            const fileData = {
+                name: name,
+                downloadUrl: url,
+                timestamp: Date.now()
+            };
+            
+            database.ref('files').push(fileData)
+                .then(() => {
+                    showNotification('تم حفظ الملف بنجاح', 'success');
+                    
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addFileModal'));
+                    modal.hide();
+                    
+                    document.getElementById('fileName').value = '';
+                    document.getElementById('fileUrl').value = '';
+                    loadFiles();
+                    loadDashboard();
+                })
+                .catch(error => {
+                    showNotification('حدث خطأ أثناء حفظ الملف', 'error');
+                });
+        }
+
+        // حذف ملف
+        function deleteFile(fileId) {
+            if (confirm('هل أنت متأكد من حذف هذا الملف؟')) {
+                database.ref('files/' + fileId).remove()
+                    .then(() => {
+                        showNotification('تم حذف الملف بنجاح', 'success');
+                        loadFiles();
+                        loadDashboard();
+                    })
+                    .catch(error => {
+                        showNotification('حدث خطأ أثناء حذف الملف', 'error');
+                    });
+            }
+        }
+
+        // تحميل سجلات البحث (من الأحدث إلى الأقدم)
+        function loadLogs() {
+            database.ref('searchLogs').orderByChild('timestamp').limitToLast(100).once('value').then(snapshot => {
+                const tbody = document.getElementById('logs-table');
+                tbody.innerHTML = '';
+                
+                if (snapshot.exists()) {
+                    const logs = [];
+                    snapshot.forEach(childSnapshot => {
+                        logs.push({ key: childSnapshot.key, ...childSnapshot.val() });
+                    });
+                    
+                    // عكس الترتيب لعرض الأحدث أولاً
+                    logs.reverse().forEach(log => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${log.nationalId}</td>
+                            <td>${log.studentName}</td>
+                            <td><span class="badge ${log.found ? 'bg-success' : 'bg-danger'}">${log.found ? 'موجود' : 'غير موجود'}</span></td>
+                            <td>${new Date(log.timestamp).toLocaleString('ar-EG')}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">لا توجد سجلات بحث</td></tr>';
+                }
+            });
+        }
+
+        // حذف جميع سجلات البحث
+        function deleteAllLogs() {
+            if (confirm('هل أنت متأكد من حذف جميع سجلات البحث؟ هذا الإجراء لا يمكن التراجع عنه!')) {
+                database.ref('searchLogs').remove()
+                    .then(() => {
+                        showNotification('تم حذف جميع سجلات البحث بنجاح', 'success');
+                        loadLogs();
+                        loadDashboard();
+                    })
+                    .catch(error => {
+                        showNotification('حدث خطأ أثناء حذف السجلات', 'error');
+                    });
+            }
+        }
+
+        // توليد بيانات الطباعة
+        function generatePrintData() {
+            const selectedGrade = document.getElementById('print-grade').value;
+            
+            database.ref('students').once('value').then(snapshot => {
+                const printContent = document.getElementById('print-content');
+                const printableArea = document.getElementById('printable-area');
+                printContent.innerHTML = '';
+                printableArea.innerHTML = '';
+                
+                if (snapshot.exists()) {
+                    let students = [];
+                    snapshot.forEach(childSnapshot => {
+                        const student = childSnapshot.val();
+                        if (selectedGrade === 'all' || student.grade === selectedGrade) {
+                            students.push(student);
+                        }
+                    });
+                    
+                    if (students.length === 0) {
+                        showNotification('لا توجد بيانات للطباعة', 'warning');
+                        return;
+                    }
+                    
+                    currentPrintData = students;
+                    
+                    // تقسيم الطلاب إلى مجموعات (60 طالب في الصفحة)
+                    const studentsPerPage = 60;
+                    const pages = Math.ceil(students.length / studentsPerPage);
+                    
+                    let printHTML = '';
+                    let printableHTML = '';
+                    
+                    for (let page = 0; page < pages; page++) {
+                        const start = page * studentsPerPage;
+                        const end = start + studentsPerPage;
+                        const pageStudents = students.slice(start, end);
+                        
+                        printHTML += generatePageHTML(pageStudents, page + 1, pages, selectedGrade);
+                        printableHTML += generatePrintablePageHTML(pageStudents, page + 1, pages, selectedGrade);
+                    }
+                    
+                    printContent.innerHTML = printHTML;
+                    printableArea.innerHTML = printableHTML;
+                    document.getElementById('print-preview').style.display = 'block';
+                    
+                    showNotification(`تم تحضير ${students.length} طالب للطباعة`, 'success');
+                } else {
+                    showNotification('لا توجد بيانات طلاب', 'warning');
+                }
+            }).catch(error => {
+                showNotification('حدث خطأ في تحميل البيانات', 'error');
+                console.error('Error loading students:', error);
+            });
+        }
+
+        // توليد HTML للصفحة (عرض المعاينة)
+        function generatePageHTML(students, pageNumber, totalPages, grade) {
+            return `
+                <div class="page-break" style="margin-bottom: 30px;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-print me-2"></i>
+                                بيانات الطلاب - ${grade === 'all' ? 'جميع الطلاب' : `فرقة ${grade}`}
+                                <span class="badge bg-primary ms-2">الصفحة ${pageNumber} من ${totalPages}</span>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                ${students.map((student, index) => `
+                                    <div class="col-md-6 col-lg-4 mb-3">
+                                        <div class="student-card">
+                                            <h6 class="text-primary">${student.name}</h6>
+                                            <div class="small">
+                                                <div><strong>الرقم القومي:</strong> ${student.nationalId}</div>
+                                                <div><strong>الفرقة:</strong> ${student.grade}</div>
+                                                <div><strong>الكود:</strong> ${student.code}</div>
+                                                <div><strong>البريد:</strong> ${student.email}</div>
+                                                <div><strong>كلمة المرور:</strong> <span class="password-display">${student.password}</span></div>
+                                                <div><strong>مصاريف الكتب:</strong> ${student.cources} ج.م</div>
+                                                <div><strong>المصاريف الدراسية:</strong> ${student.card} ج.م</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // توليد HTML للطباعة الفعلية
+        function generatePrintablePageHTML(students, pageNumber, totalPages, grade) {
+            return `
+                <div class="page" style="page-break-after: always; padding: 20px; font-family: 'Tajawal', sans-serif;">
+                    <div class="header text-center mb-4">
+                        <h3 style="color: #2c3e50; margin-bottom: 5px;">كلية الطب البيطري - جامعة المنيا</h3>
+                        <h4 style="color: #2980b9; margin-bottom: 10px;">بيانات الطلاب</h4>
+                        <p style="color: #7f8c8d; margin-bottom: 5px;">${grade === 'all' ? 'جميع الطلاب' : `فرقة ${grade}`} - الصفحة ${pageNumber} من ${totalPages}</p>
+                        <hr style="border-color: #bdc3c7; margin: 15px 0;">
+                    </div>
+                    
+                    <div class="students-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                        ${students.map(student => `
+                            <div class="student-print-card">
+                                <h5 style="color: #2c3e50; margin: 0 0 10px 0; font-size: 16px; border-bottom: 2px solid #3498db; padding-bottom: 5px;">${student.name}</h5>
+                                <div style="font-size: 14px; line-height: 1.4;">
+                                    <div><strong>الرقم القومي:</strong> ${student.nationalId}</div>
+                                    <div><strong>الفرقة:</strong> ${student.grade}</div>
+                                    <div><strong>الكود:</strong> ${student.code}</div>
+                                    <div><strong>البريد:</strong> ${student.email}</div>
+                                    <div><strong>كلمة المرور:</strong> <span style="font-family: 'Courier New'; font-weight: bold; letter-spacing: 2px;">${student.password}</span></div>
+                                    <div><strong>مصاريف الكتب:</strong> ${student.cources} ج.م</div>
+                                    <div><strong>المصاريف الدراسية:</strong> ${student.card} ج.م</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="footer text-center mt-4" style="border-top: 2px solid #bdc3c7; padding-top: 15px;">
+                        <p style="color: #7f8c8d; margin: 0;">تم الطباعة في: ${new Date().toLocaleDateString('ar-EG')} - نظام معلومات الطالب</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // وظيفة الطباعة الفعلية
+        function printData() {
+            if (currentPrintData.length === 0) {
+                showNotification('لا توجد بيانات للطباعة', 'warning');
+                return;
+            }
+            
+            document.getElementById('printable-area').style.display = 'block';
+            window.print();
+            document.getElementById('printable-area').style.display = 'none';
+        }
+
+        // إظهار الإشعارات
+        function showNotification(message, type) {
+            // إزالة الإشعارات القديمة
+            const oldNotifications = document.querySelectorAll('.floating-notification');
+            oldNotifications.forEach(notification => {
+                notification.remove();
+            });
+            
+            // إنشاء الإشعار الجديد
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible floating-notification`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                                  type === 'error' ? 'exclamation-triangle' : 
+                                  type === 'warning' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // إزالة الإشعار تلقائياً بعد 5 ثوانٍ
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        // جعل الدوال متاحة عالمياً
+        window.deleteStudent = deleteStudent;
+        window.deleteAnnouncement = deleteAnnouncement;
+        window.deleteFile = deleteFile;
+        window.deleteAllStudents = deleteAllStudents;
+        window.deleteAllLogs = deleteAllLogs;
+        window.generatePrintData = generatePrintData;
+        window.printData = printData;
+    </script>
+</body>
+</html>
