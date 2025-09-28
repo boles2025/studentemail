@@ -228,19 +228,32 @@
 </head>
 <body>
     <!-- شريط التنقل -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-paw me-2"></i>كلية الطب البيطري - جامعة المنيا
-            </a>
-            <div class="d-flex align-items-center">
-                <span class="text-light me-3" id="current-date"></span>
-                <a href="admin.html" class="btn btn-outline-light btn-sm">
-                    <i class="fas fa-cog me-1"></i>لوحة التحكم
-                </a>
-            </div>
-        </div>
-    </nav>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand d-flex flex-column" href="#">
+      <i class="fas fa-paw mb-1"></i>
+      <span class="h5 mb-0">كلية الطب البيطري - جامعة المنيا</span>
+      <small class="animated-text">تصميم مهندس بولس سمير</small>
+    </a>
+    <div class="d-flex align-items-center">
+      <span class="text-light me-3" id="current-date"></span>
+    </div>
+  </div>
+</nav>
+
+<style>
+.animated-text {
+  color: #ffc107; /* أصفر ذهبي */
+  font-size: 0.9rem;
+  animation: fadeInOut 3s infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+</style>
+
 
     <!-- محتوى الصفحة -->
     <div class="container mt-4">
@@ -377,9 +390,9 @@
     <div class="printable-area" id="printable-area">
         <div class="container">
             <div class="text-center mb-4">
-                <img src="https://via.placeholder.com/100x100/2c3e50/ffffff?text=VET" alt="شعار الكلية" 
+                <img src="https://th.bing.com/th/id/R.dcc3d07da16536a200182090d846b66b?rik=U7IJFK4y6CLNCA&riu=http%3a%2f%2fvet.minia.edu.eg%2fimages%2flogoooo.png&ehk=iKf9DQYI3C%2bufr44%2fis4U9aQ8aGeZyHxlhn6gj0VVwk%3d&risl=&pid=ImgRaw&r=0" alt="شعار الكلية" 
                      style="border-radius: 50%; margin-bottom: 15px;">
-                <h3 class="text-primary mb-2">كلية الطب البيطري - جامعة سوهاج</h3>
+                <h3 class="text-primary mb-2">كلية الطب البيطري - جامعة المنيا</h3>
                 <h4 class="text-dark mb-3">بيانات الطالب</h4>
                 <div class="border-bottom pb-3 mb-4"></div>
             </div>
@@ -561,7 +574,7 @@
                                             <span class="fw-bold">${file.name}</span>
                                         </div>
                                         <a href="${file.downloadUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-download me-1"></i>تحميل
+                                            <i class="fas fa-download me-1"></i>عرض
                                         </a>
                                     </div>
                                     <small class="text-muted">
