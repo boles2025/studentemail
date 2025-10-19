@@ -199,21 +199,6 @@
             border-bottom: none;
         }
 
-        .announcement-item {
-            padding: 18px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            background: #fff9e6;
-            transition: all 0.3s ease;
-            border-right: 4px solid var(--warning-color);
-        }
-
-        .announcement-item:hover {
-            background: #fff3cc;
-            transform: translateX(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
-
         .signature {
             position: relative;
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
@@ -405,6 +390,24 @@
         .copy-btn.copied {
             background: linear-gradient(135deg, var(--vet-green) 0%, #2ecc71 100%);
         }
+
+        .ebook-link {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .ebook-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.15);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -473,10 +476,16 @@
                                         <div id="result-national-id">غير متوفر</div>
                                     </div>
                                 </div>
-                                <div class="info-item">
+                                
+                                    <div class="info-item">
                                     <div class="info-item-content">
-                                        <strong>الكود الجامعي:</strong>
-                                        <div id="result-code">غير متوفر</div>
+                                        <strong>كود الطالب الجامعي:</strong>
+                                        <div class="copyable-field">
+                                            <span id="result-code" class="field-content">غير متوفر</span>
+                                            <button class="btn btn-copy copy-btn" data-target="result-code">
+                                                <i class="fas fa-copy me-1"></i>نسخ
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="info-item">
@@ -503,6 +512,15 @@
                                 </div>
                             </div>
                             
+                            <!-- رابط استخراج كود الكتب -->
+                            <div class="text-center mt-4 no-print">
+                                <h5 class="mb-3">لاستخراج كود دفع فوري للكتب والمنصة:</h5>
+                                <p class="mb-3">بعد ماتاخذ الكود الجامعي بالضغط على زر النسخ بجانبه يمكنك استخدامه للحصول على كود فوري للكتب عبر الرابط التالي:</p>
+                                <a href="https://epay.minia.edu.eg/Ebook3.aspx?cat_id=45" target="_blank" class="ebook-link">
+                                    <i class="fas fa-book me-2"></i>اضغط هنا لاستخراج كود فوري للكتب
+                                </a>
+                            </div>
+                            
                             <div class="text-center mt-4 no-print">
                                 <button class="btn btn-success btn-lg" id="print-btn">
                                     <i class="fas fa-print me-2"></i>طباعة بيانات الطالب
@@ -525,21 +543,6 @@
                             <div class="text-center py-3">
                                 <div class="spinner-border text-info"></div>
                                 <p class="mt-2">جاري تحميل الملفات...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- الإعلانات -->
-                <div class="card">
-                    <div class="card-header bg-warning text-dark">
-                        <h5 class="mb-0"><i class="fas fa-bullhorn me-2"></i>الإعلانات الهامة</h5>
-                    </div>
-                    <div class="card-body">
-                        <div id="announcements-list">
-                            <div class="text-center py-3">
-                                <div class="spinner-border text-warning"></div>
-                                <p class="mt-2">جاري تحميل الإعلانات...</p>
                             </div>
                         </div>
                     </div>
@@ -608,8 +611,7 @@
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('current-date').textContent = now.toLocaleDateString('ar-EG', options);
             
-            // تحميل الإعلانات والملفات
-            loadAnnouncements();
+            // تحميل الملفات فقط (تم إزالة الإعلانات)
             loadFiles();
             
             // إعداد أحداث الأزرار
@@ -690,38 +692,6 @@
             }
             
             document.getElementById('search-results').classList.remove('d-none');
-        }
-
-        // تحميل الإعلانات
-        function loadAnnouncements() {
-            database.ref('announcements').orderByChild('timestamp').limitToLast(5).once('value')
-                .then((snapshot) => {
-                    const container = document.getElementById('announcements-list');
-                    if (snapshot.exists()) {
-                        let html = '';
-                        snapshot.forEach((childSnapshot) => {
-                            const announcement = childSnapshot.val();
-                            html += `
-                                <div class="announcement-item">
-                                    <h6 class="text-warning"><i class="fas fa-bullhorn me-2"></i>${announcement.title}</h6>
-                                    <p class="mb-2">${announcement.content}</p>
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock me-1"></i>
-                                        ${new Date(announcement.timestamp).toLocaleDateString('ar-EG')}
-                                    </small>
-                                </div>
-                            `;
-                        });
-                        container.innerHTML = html;
-                    } else {
-                        container.innerHTML = '<p class="text-muted text-center">لا توجد إعلانات حالياً</p>';
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error loading announcements:', error);
-                    document.getElementById('announcements-list').innerHTML = 
-                        '<p class="text-danger text-center">حدث خطأ في تحميل الإعلانات</p>';
-                });
         }
 
         // تحميل الملفات
