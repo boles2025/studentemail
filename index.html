@@ -6,231 +6,590 @@
     <title>نظام معلومات الطالب - كلية الطب البيطري</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-            --danger-color: #e74c3c;
-            --vet-green: #27ae60;
-            --vet-blue: #2980b9;
-            --light-bg: #f8fafc;
-            --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --primary: #1a237e;
+            --primary-dark: #0d1452;
+            --primary-light: #534bae;
+            --secondary: #00acc1;
+            --accent: #ff4081;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --light: #f5f7ff;
+            --dark: #121212;
+            --gray: #757575;
+            --border: #e0e0e0;
         }
 
         * {
-            font-family: 'Tajawal', sans-serif;
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e3f2fd 100%);
+            background: linear-gradient(135deg, #f5f7ff 0%, #e3f2fd 100%);
             min-height: 100vh;
-            direction: rtl;
+            color: #333;
         }
 
+        /* تصميم جديد للنافبار */
         .navbar {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--vet-blue) 100%) !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            padding: 15px 0;
+            background: white !important;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 12px 0;
+            border-bottom: 3px solid var(--primary);
         }
 
         .navbar-brand {
-            font-weight: 700;
-            font-size: 1.3rem;
+            color: var(--primary) !important;
+            font-weight: 800;
+            font-size: 1.4rem;
         }
 
+        .navbar-brand i {
+            color: var(--accent);
+            margin-left: 8px;
+        }
+
+        .date-display {
+            background: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(26, 35, 126, 0.2);
+        }
+
+        /* الحاوية الرئيسية */
         .main-container {
             padding: 30px 0;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
-        .card {
+        /* كارد البحث - تصميم عصري */
+        .search-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             border: none;
-            border-radius: 18px;
-            box-shadow: var(--card-shadow);
-            margin-bottom: 25px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 30px;
             overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .search-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .search-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .search-header h4 {
+            margin: 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-body {
+            padding: 30px;
+        }
+
+        .search-input-container {
+            position: relative;
+        }
+
+        .search-input {
+            padding: 15px 20px 15px 50px;
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+
+        .search-input:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(0, 172, 193, 0.2);
             background: white;
         }
 
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.2rem;
         }
 
-        .card-header {
-            background: linear-gradient(135deg, var(--vet-blue) 0%, var(--primary-color) 100%);
+        .search-btn {
+            background: linear-gradient(135deg, var(--secondary) 0%, #0097a7 100%);
             color: white;
-            border-radius: 18px 18px 0 0 !important;
-            padding: 18px 25px;
-            font-weight: 600;
-            border-bottom: none;
-        }
-
-        .btn {
-            border-radius: 12px;
-            padding: 12px 25px;
-            font-weight: 600;
-            transition: all 0.3s ease;
             border: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            width: 100%;
         }
 
-        .btn:hover {
+        .search-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 7px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 20px rgba(0, 172, 193, 0.3);
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--vet-blue) 0%, var(--primary-color) 100%);
+        .search-btn:active {
+            transform: translateY(-1px);
         }
 
-        .btn-success {
-            background: linear-gradient(135deg, var(--vet-green) 0%, #2ecc71 100%);
+        /* نتائج البحث - تصميم أنيق */
+        .results-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: none;
+            margin-bottom: 30px;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
         }
 
-        .btn-copy {
-            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .results-header {
+            background: linear-gradient(135deg, var(--success) 0%, #2e7d32 100%);
             color: white;
-            padding: 8px 15px;
-            font-size: 0.9rem;
+            padding: 20px 30px;
         }
 
+        .student-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 2.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            border: 5px solid white;
+        }
+
+        .student-name {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .student-grade {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        /* بطاقات المعلومات */
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
 
-        .info-item {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        .info-card {
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
             border-radius: 15px;
-            padding: 22px;
-            border-right: 5px solid var(--vet-green);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 25px;
+            border: 2px solid #e8eaf6;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
 
-        .info-item::before {
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-card::before {
             content: '';
             position: absolute;
             top: 0;
             right: 0;
-            width: 100%;
+            width: 5px;
             height: 100%;
-            background: linear-gradient(45deg, transparent 0%, rgba(39, 174, 96, 0.03) 100%);
-            z-index: 0;
+            background: var(--secondary);
         }
 
-        .info-item:hover {
-            transform: translateX(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
-
-        .info-item-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .info-item strong {
-            color: var(--primary-color);
-            font-size: 1rem;
-            display: block;
+        .info-label {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.9rem;
             margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .info-item div {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: #2c3e50;
+        .info-value {
+            color: #333;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+            word-break: break-word;
         }
 
-        .password-display {
+        .password-value {
             font-family: 'Courier New', monospace;
             letter-spacing: 2px;
             font-weight: bold;
-            font-size: 1.1em;
         }
 
-        .first-char {
-            color: var(--vet-green);
-            font-size: 1.3em;
-            text-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);
+        .password-char {
+            color: var(--accent);
+            font-weight: 800;
         }
 
-        .floating-notification {
+        /* أزرار النسخ */
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(26, 35, 126, 0.2);
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+        }
+
+        /* الكاردات الجانبية */
+        .side-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: none;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .side-card-header {
+            padding: 20px 25px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .side-card-header i {
+            color: var(--accent);
+            font-size: 1.3rem;
+        }
+
+        .side-card-header h5 {
+            margin: 0;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .side-card-body {
+            padding: 25px;
+        }
+
+        /* قائمة الملفات */
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s;
+            border-radius: 10px;
+        }
+
+        .file-item:hover {
+            background: #f8f9ff;
+            transform: translateX(-5px);
+        }
+
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--secondary) 0%, #0097a7 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .file-info {
+            flex: 1;
+            padding: 0 15px;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .file-date {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .download-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        /* قائمة الإعلانات */
+        .announcement-item {
+            padding: 20px;
+            background: linear-gradient(135deg, #fff8e1 0%, #fffde7 100%);
+            border-radius: 15px;
+            border-right: 4px solid var(--warning);
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .announcement-item:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 8px 20px rgba(255, 152, 0, 0.1);
+        }
+
+        .announcement-title {
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .announcement-content {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .announcement-date {
+            font-size: 0.85rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* زر الطباعة */
+        .print-btn {
+            background: linear-gradient(135deg, var(--success) 0%, #2e7d32 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px auto;
+            min-width: 250px;
+        }
+
+        .print-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        /* التوقيع */
+        .signature {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(26, 35, 126, 0.2);
+        }
+
+        .signature-text {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .signature-subtext {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        /* النوافذ المنبثقة */
+        .notification {
             position: fixed;
             top: 20px;
             right: 20px;
-            z-index: 1050;
+            z-index: 9999;
             min-width: 300px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            animation: slideInRight 0.5s ease;
-            border: none;
+            max-width: 400px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideIn 0.3s ease-out;
+            border-right: 5px solid;
         }
 
-        @keyframes slideInRight {
+        @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
 
-        .file-item {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            transition: all 0.3s ease;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            background: white;
+        .notification.success {
+            border-right-color: var(--success);
         }
 
-        .file-item:hover {
-            background: linear-gradient(135deg, #e3f2fd 0%, #f0f7ff 100%);
-            transform: translateX(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        .notification.error {
+            border-right-color: var(--danger);
         }
 
-        .file-item:last-child {
-            border-bottom: none;
+        .notification.warning {
+            border-right-color: var(--warning);
         }
 
-        .signature {
-            position: relative;
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin-top: 40px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
         }
 
-        .signature::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent 0%, rgba(255,255,255,0.1) 100%);
-            animation: shimmer 3s infinite;
+        .notification.success .notification-icon {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
         }
 
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+        .notification.error .notification-icon {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--danger);
         }
 
-        .signature-text {
-            position: relative;
-            z-index: 2;
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* تصميم متجاوب */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px 15px;
+            }
+            
+            .search-header, .results-header {
+                padding: 15px 20px;
+            }
+            
+            .search-body {
+                padding: 20px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .student-name {
+                font-size: 1.5rem;
+            }
+            
+            .print-btn {
+                width: 100%;
+                min-width: auto;
+            }
+        }
+
+        /* تأثيرات إضافية */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .bounce {
+            animation: bounce 0.5s;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         /* تصميم الطباعة */
@@ -246,208 +605,66 @@
                 left: 0;
                 top: 0;
                 width: 100%;
-                padding: 20px;
                 background: white;
+                padding: 20px;
             }
             .no-print {
                 display: none !important;
-            }
-            .student-print-card {
-                border: 2px solid #333;
-                border-radius: 10px;
-                padding: 20px;
-                margin-bottom: 20px;
-                page-break-inside: avoid;
-                background: white !important;
-                color: black !important;
             }
         }
 
         .printable-area {
             display: none;
         }
-
-        .search-container {
-            position: relative;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--vet-blue);
-        }
-
-        .input-group-custom {
-            position: relative;
-        }
-
-        .input-group-custom .form-control {
-            padding-right: 15px;
-            padding-left: 50px;
-            border-radius: 12px;
-            border: 2px solid #e9ecef;
-            transition: all 0.3s ease;
-        }
-
-        .input-group-custom .form-control:focus {
-            border-color: var(--vet-blue);
-            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
-        }
-
-        .animated-text {
-            color: #ffc107;
-            font-size: 0.9rem;
-            animation: fadeInOut 3s infinite;
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
-        }
-
-        .section-title {
-            position: relative;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(135deg, var(--vet-blue) 0%, var(--vet-green) 100%);
-            border-radius: 2px;
-        }
-
-        .student-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--vet-blue) 0%, var(--vet-green) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            color: white;
-            font-size: 3rem;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-
-        .student-info-header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-
-        .logo-container {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .college-logo {
-            max-width: 180px;
-            height: auto;
-            border-radius: 50%;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .copyable-field {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        .copyable-field .field-content {
-            flex-grow: 1;
-            word-break: break-all;
-        }
-
-        .copy-btn {
-            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 6px 12px;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-
-        .copy-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(155, 89, 182, 0.3);
-        }
-
-        .copy-btn.copied {
-            background: linear-gradient(135deg, var(--vet-green) 0%, #2ecc71 100%);
-        }
-
-        .ebook-link {
-            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 12px;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 15px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .ebook-link:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 20px rgba(0,0,0,0.15);
-            color: white;
-        }
     </style>
 </head>
 <body>
     <!-- شريط التنقل -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a class="navbar-brand d-flex flex-column" href="#">
-                <i class="fas fa-paw mb-1"></i>
-                <span class="h5 mb-0">كلية الطب البيطري - جامعة المنيا</span>
-                <small class="animated-text">تصميم مهندس بولس سمير</small>
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-paw"></i>
+                كلية الطب البيطري - جامعة المنيا
             </a>
             <div class="d-flex align-items-center">
-                <span class="text-light me-3" id="current-date"></span>
+                <span class="date-display" id="current-date"></span>
             </div>
         </div>
     </nav>
 
-    <!-- محتوى الصفحة -->
+    <!-- المحتوى الرئيسي -->
     <div class="container main-container">
         <div class="row">
-            <!-- قسم البحث والنتائج -->
+            <!-- القسم الرئيسي -->
             <div class="col-lg-8">
                 <!-- بطاقة البحث -->
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="mb-0"><i class="fas fa-search me-2"></i>البحث بالرقم القومي</h4>
+                <div class="search-card">
+                    <div class="search-header">
+                        <h4>
+                            <i class="fas fa-search"></i>
+                            البحث بالرقم القومي
+                        </h4>
                     </div>
-                    <div class="card-body">
+                    <div class="search-body">
                         <div class="row align-items-end">
                             <div class="col-md-8">
-                                <label for="national-id" class="form-label">الرقم القومي (14 رقمًا)</label>
-                                <div class="input-group-custom">
+                                <label class="form-label fw-bold mb-3" style="color: var(--primary);">
+                                    <i class="fas fa-id-card me-2"></i>
+                                    الرقم القومي (14 رقمًا)
+                                </label>
+                                <div class="search-input-container">
                                     <i class="fas fa-id-card search-icon"></i>
-                                    <input type="text" class="form-control" id="national-id" 
-                                           maxlength="14" placeholder="أدخل الرقم القومي للطالب">
+                                    <input type="text" 
+                                           class="form-control search-input" 
+                                           id="national-id" 
+                                           maxlength="14" 
+                                           placeholder="أدخل الرقم القومي للطالب">
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <button class="btn btn-primary w-100" id="search-btn">
-                                    <i class="fas fa-search me-2"></i>بحث عن الطالب
+                                <button class="search-btn" id="search-btn">
+                                    <i class="fas fa-search me-2"></i>
+                                    بحث عن الطالب
                                 </button>
                             </div>
                         </div>
@@ -456,74 +673,68 @@
 
                 <!-- نتائج البحث -->
                 <div id="search-results" class="d-none">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="mb-0"><i class="fas fa-user-graduate me-2"></i>بيانات الطالب</h4>
+                    <div class="results-card">
+                        <div class="results-header">
+                            <h4 class="mb-0">
+                                <i class="fas fa-user-graduate me-2"></i>
+                                بيانات الطالب
+                            </h4>
                         </div>
                         <div class="card-body">
-                            <div class="student-info-header">
+                            <div class="text-center mb-5">
                                 <div class="student-avatar">
                                     <i class="fas fa-user-graduate"></i>
                                 </div>
-                                <h3 id="result-name" class="text-primary">غير متوفر</h3>
-                                <p class="text-muted" id="result-grade">غير متوفر</p>
+                                <h2 class="student-name" id="result-name">غير متوفر</h2>
+                                <p class="student-grade" id="result-grade">غير متوفر</p>
                             </div>
                             
                             <div class="info-grid">
-                                <div class="info-item">
-                                    <div class="info-item-content">
-                                        <strong>الرقم القومي:</strong>
-                                        <div id="result-national-id">غير متوفر</div>
+                                <div class="info-card">
+                                    <div class="info-label">
+                                        <i class="fas fa-id-card"></i>
+                                        الرقم القومي
                                     </div>
+                                    <p class="info-value" id="result-national-id">غير متوفر</p>
                                 </div>
                                 
-                                    <div class="info-item">
-                                    <div class="info-item-content">
-                                        <strong>كود الطالب الجامعي:</strong>
-                                        <div class="copyable-field">
-                                            <span id="result-code" class="field-content">غير متوفر</span>
-                                            <button class="btn btn-copy copy-btn" data-target="result-code">
-                                                <i class="fas fa-copy me-1"></i>نسخ
-                                            </button>
-                                        </div>
+                                <div class="info-card">
+                                    <div class="info-label">
+                                        <i class="fas fa-barcode"></i>
+                                        الكود الجامعي
                                     </div>
+                                    <p class="info-value" id="result-code">غير متوفر</p>
                                 </div>
-                                <div class="info-item">
-                                    <div class="info-item-content">
-                                        <strong>البريد الإلكتروني:</strong>
-                                        <div class="copyable-field">
-                                            <span id="result-email" class="field-content">غير متوفر</span>
-                                            <button class="btn btn-copy copy-btn" data-target="result-email">
-                                                <i class="fas fa-copy me-1"></i>نسخ
-                                            </button>
-                                        </div>
+                                
+                                <div class="info-card">
+                                    <div class="info-label">
+                                        <i class="fas fa-envelope"></i>
+                                        البريد الإلكتروني
                                     </div>
+                                    <p class="info-value" id="result-email">غير متوفر</p>
+                                    <button class="copy-btn" data-target="result-email">
+                                        <i class="fas fa-copy"></i>
+                                        نسخ البريد
+                                    </button>
                                 </div>
-                                <div class="info-item">
-                                    <div class="info-item-content">
-                                        <strong>كلمة المرور:</strong>
-                                        <div class="copyable-field">
-                                            <span id="result-password" class="password-display field-content">غير متوفر</span>
-                                            <button class="btn btn-copy copy-btn" data-target="result-password">
-                                                <i class="fas fa-copy me-1"></i>نسخ
-                                            </button>
-                                        </div>
+                                
+                                <div class="info-card">
+                                    <div class="info-label">
+                                        <i class="fas fa-key"></i>
+                                        كلمة المرور
                                     </div>
+                                    <p class="info-value password-value" id="result-password">غير متوفر</p>
+                                    <button class="copy-btn" data-target="result-password">
+                                        <i class="fas fa-copy"></i>
+                                        نسخ كلمة المرور
+                                    </button>
                                 </div>
                             </div>
                             
-                            <!-- رابط استخراج كود الكتب -->
-                            <div class="text-center mt-4 no-print">
-                                <h5 class="mb-3">لاستخراج كود دفع فوري للكتب والمنصة:</h5>
-                                <p class="mb-3">بعد ماتاخذ الكود الجامعي بالضغط على زر النسخ بجانبه يمكنك استخدامه للحصول على كود فوري للكتب عبر الرابط التالي:</p>
-                                <a href="https://epay.minia.edu.eg/Ebook3.aspx?cat_id=45" target="_blank" class="ebook-link">
-                                    <i class="fas fa-book me-2"></i>اضغط هنا لاستخراج كود فوري للكتب
-                                </a>
-                            </div>
-                            
-                            <div class="text-center mt-4 no-print">
-                                <button class="btn btn-success btn-lg" id="print-btn">
-                                    <i class="fas fa-print me-2"></i>طباعة بيانات الطالب
+                            <div class="text-center mt-5 no-print">
+                                <button class="print-btn" id="print-btn">
+                                    <i class="fas fa-print"></i>
+                                    طباعة بيانات الطالب
                                 </button>
                             </div>
                         </div>
@@ -531,22 +742,50 @@
                 </div>
             </div>
 
-            <!-- الجزء الجانبي -->
+            <!-- الشريط الجانبي -->
             <div class="col-lg-4">
                 <!-- الملفات المهمة -->
-                <div class="card">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="fas fa-file-download me-2"></i>الملفات المهمة</h5>
+                <div class="side-card">
+                    <div class="side-card-header">
+                        <i class="fas fa-file-download"></i>
+                        <h5>الملفات المهمة</h5>
                     </div>
-                    <div class="card-body">
+                    <div class="side-card-body">
                         <div id="files-list">
-                            <div class="text-center py-3">
-                                <div class="spinner-border text-info"></div>
-                                <p class="mt-2">جاري تحميل الملفات...</p>
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-primary"></div>
+                                <p class="mt-3 text-muted">جاري تحميل الملفات...</p>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- الإعلانات -->
+                <div class="side-card">
+                    <div class="side-card-header">
+                        <i class="fas fa-bullhorn"></i>
+                        <h5>الإعلانات الهامة</h5>
+                    </div>
+                    <div class="side-card-body">
+                        <div id="announcements-list">
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-warning"></div>
+                                <p class="mt-3 text-muted">جاري تحميل الإعلانات...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- التوقيع -->
+        <div class="signature">
+            <div class="signature-text">
+                <i class="fas fa-code me-2"></i>
+                تصميم وتنفيذ: مهندس بولس سمير
+            </div>
+            <div class="signature-subtext">
+                مدير وحدة تكنولوجيا المعلومات - نظام معلومات الطالب
             </div>
         </div>
     </div>
@@ -554,12 +793,10 @@
     <!-- منطقة الطباعة -->
     <div class="printable-area" id="printable-area">
         <div class="container">
-            <div class="logo-container">
-                <img src="https://th.bing.com/th/id/R.dcc3d07da16536a200182090d846b66b?rik=U7IJFK4y6CLNCA&riu=http%3a%2f%2fvet.minia.edu.eg%2fimages%2flogoooo.png&ehk=iKf9DQYI3C%2bufr44%2fis4U9aQ8aGeZyHxlhn6gj0VVwk%3d&risl=&pid=ImgRaw&r=0" 
-                     alt="شعار الكلية" class="college-logo">
-                <h3 class="text-primary mb-2">كلية الطب البيطري - جامعة المنيا</h3>
-                <h4 class="text-dark mb-3">بيانات الطالب</h4>
-                <div class="border-bottom pb-3 mb-4"></div>
+            <div class="text-center mb-4">
+                <h2 class="text-primary mb-3">كلية الطب البيطري - جامعة المنيا</h2>
+                <h4 class="text-dark mb-4">بيانات الطالب</h4>
+                <hr>
             </div>
             
             <div class="student-print-card" id="student-print-data">
@@ -569,17 +806,6 @@
             <div class="text-center mt-4 pt-3 border-top">
                 <p class="text-muted mb-1">تم الطباعة في: <span id="print-date"></span></p>
                 <p class="text-muted">نظام معلومات الطالب - إدارة وحدة تكنولوجيا المعلومات</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- التوقيع المتحرك -->
-    <div class="container">
-        <div class="signature">
-            <div class="text-center signature-text">
-                <i class="fas fa-code me-2"></i>تصميم وتنفيذ: مهندس بولس سمير - مدير وحدة تكنولوجيا المعلومات
-                <br>
-                <small>نظام معلومات الطالب - كلية الطب البيطري</small>
             </div>
         </div>
     </div>
@@ -607,94 +833,157 @@
         // عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', function() {
             // عرض التاريخ
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('current-date').textContent = now.toLocaleDateString('ar-EG', options);
+            updateDateTime();
+            setInterval(updateDateTime, 60000);
             
-            // تحميل الملفات فقط (تم إزالة الإعلانات)
+            // تحميل الإعلانات والملفات
+            loadAnnouncements();
             loadFiles();
             
-            // إعداد أحداث الأزرار
+            // إعداد الأحداث
+            setupEventListeners();
+        });
+
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('ar-EG', options);
+        }
+
+        function setupEventListeners() {
+            // زر البحث
             document.getElementById('search-btn').addEventListener('click', searchStudent);
+            
+            // البحث عند الضغط على Enter
             document.getElementById('national-id').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') searchStudent();
             });
+            
+            // زر الطباعة
             document.getElementById('print-btn').addEventListener('click', printStudentData);
             
-            // إعداد أحداث أزرار النسخ
+            // أزرار النسخ
             document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('copy-btn') || e.target.closest('.copy-btn')) {
-                    const btn = e.target.classList.contains('copy-btn') ? e.target : e.target.closest('.copy-btn');
+                if (e.target.closest('.copy-btn')) {
+                    const btn = e.target.closest('.copy-btn');
                     const targetId = btn.getAttribute('data-target');
                     copyToClipboard(targetId, btn);
                 }
             });
-        });
+        }
 
-        // دالة البحث عن طالب
         function searchStudent() {
             const nationalId = document.getElementById('national-id').value.trim();
             
+            // التحقق من صحة الرقم القومي
             if (nationalId.length !== 14 || isNaN(nationalId)) {
-                showNotification('الرجاء إدخال رقم قومي صحيح مكون من 14 رقمًا', 'error');
+                showNotification('خطأ', 'الرجاء إدخال رقم قومي صحيح مكون من 14 رقمًا', 'error');
+                // تأثير اهتزاز للحقل
+                const input = document.getElementById('national-id');
+                input.classList.add('bounce');
+                setTimeout(() => input.classList.remove('bounce'), 500);
                 return;
             }
             
             const searchBtn = document.getElementById('search-btn');
-            searchBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>جاري البحث...';
+            const originalText = searchBtn.innerHTML;
+            searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري البحث...';
             searchBtn.disabled = true;
             
+            // البحث في Firebase
             database.ref('students/' + nationalId).once('value')
                 .then((snapshot) => {
                     if (snapshot.exists()) {
                         const student = snapshot.val();
                         displayStudentData(student);
                         logSearch(nationalId, true, student.name);
+                        showNotification('نجاح', 'تم العثور على بيانات الطالب', 'success');
                     } else {
-                        showNotification('لم يتم العثور على طالب بهذا الرقم القومي', 'error');
+                        showNotification('غير موجود', 'لم يتم العثور على طالب بهذا الرقم القومي', 'error');
                         document.getElementById('search-results').classList.add('d-none');
                         logSearch(nationalId, false);
                     }
                 })
                 .catch((error) => {
-                    showNotification('حدث خطأ أثناء البحث', 'error');
                     console.error('Error:', error);
+                    showNotification('خطأ', 'حدث خطأ أثناء البحث. الرجاء المحاولة مرة أخرى', 'error');
                 })
                 .finally(() => {
-                    searchBtn.innerHTML = '<i class="fas fa-search me-2"></i>بحث عن الطالب';
+                    searchBtn.innerHTML = originalText;
                     searchBtn.disabled = false;
                 });
         }
 
-        // عرض بيانات الطالب
         function displayStudentData(student) {
-            // التأكد من وجود جميع البيانات
+            // تحديث البيانات
             document.getElementById('result-name').textContent = student.name || 'غير متوفر';
-            document.getElementById('result-national-id').textContent = student.nationalId || 'غير متوفر';
             document.getElementById('result-grade').textContent = student.grade || 'غير متوفر';
+            document.getElementById('result-national-id').textContent = student.nationalId || 'غير متوفر';
             document.getElementById('result-code').textContent = student.code || 'غير متوفر';
             document.getElementById('result-email').textContent = student.email || 'غير متوفر';
             
-            // عرض كلمة المرور مع تمييز الحرف الأول
+            // عرض كلمة المرور مع تمييز أول حرف
             const password = student.password || '';
+            let passwordHTML = 'غير متوفر';
             if (password) {
-                let passwordHTML = '';
-                for (let i = 0; i < password.length; i++) {
-                    if (i === 0) {
-                        passwordHTML += `<span class="first-char">${password[i]}</span>`;
-                    } else {
-                        passwordHTML += password[i];
-                    }
-                }
-                document.getElementById('result-password').innerHTML = passwordHTML;
-            } else {
-                document.getElementById('result-password').textContent = 'غير متوفر';
+                passwordHTML = `<span class="password-char">${password.charAt(0)}</span>${password.slice(1)}`;
             }
+            document.getElementById('result-password').innerHTML = passwordHTML;
             
-            document.getElementById('search-results').classList.remove('d-none');
+            // إظهار نتائج البحث
+            const resultsDiv = document.getElementById('search-results');
+            resultsDiv.classList.remove('d-none');
+            
+            // تأثير ظهور النتائج
+            resultsDiv.style.animation = 'none';
+            setTimeout(() => {
+                resultsDiv.style.animation = 'fadeIn 0.5s ease-out';
+            }, 10);
         }
 
-        // تحميل الملفات
+        function loadAnnouncements() {
+            database.ref('announcements').orderByChild('timestamp').limitToLast(5).once('value')
+                .then((snapshot) => {
+                    const container = document.getElementById('announcements-list');
+                    if (snapshot.exists()) {
+                        let html = '';
+                        snapshot.forEach((childSnapshot) => {
+                            const announcement = childSnapshot.val();
+                            html += `
+                                <div class="announcement-item">
+                                    <div class="announcement-title">
+                                        <i class="fas fa-bullhorn"></i>
+                                        ${announcement.title}
+                                    </div>
+                                    <div class="announcement-content">
+                                        ${announcement.content}
+                                    </div>
+                                    <div class="announcement-date">
+                                        <i class="fas fa-calendar"></i>
+                                        ${new Date(announcement.timestamp).toLocaleDateString('ar-EG')}
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        container.innerHTML = html;
+                    } else {
+                        container.innerHTML = '<p class="text-center text-muted">لا توجد إعلانات حالياً</p>';
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error loading announcements:', error);
+                    document.getElementById('announcements-list').innerHTML = 
+                        '<p class="text-center text-danger">حدث خطأ في تحميل الإعلانات</p>';
+                });
+        }
+
         function loadFiles() {
             database.ref('files').orderByChild('timestamp').limitToLast(5).once('value')
                 .then((snapshot) => {
@@ -705,35 +994,33 @@
                             const file = childSnapshot.val();
                             html += `
                                 <div class="file-item">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <i class="fas fa-file-pdf text-danger me-2"></i>
-                                            <span class="fw-bold">${file.name}</span>
-                                        </div>
-                                        <a href="${file.downloadUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-download me-1"></i>عرض
-                                        </a>
+                                    <div class="file-icon">
+                                        <i class="fas fa-file-pdf"></i>
                                     </div>
-                                    <small class="text-muted">
-                                        <i class="fas fa-calendar me-1"></i>
-                                        ${new Date(file.timestamp).toLocaleDateString('ar-EG')}
-                                    </small>
+                                    <div class="file-info">
+                                        <div class="file-name">${file.name}</div>
+                                        <div class="file-date">
+                                            ${new Date(file.timestamp).toLocaleDateString('ar-EG')}
+                                        </div>
+                                    </div>
+                                    <a href="${file.downloadUrl}" target="_blank" class="download-btn">
+                                        <i class="fas fa-download"></i>
+                                    </a>
                                 </div>
                             `;
                         });
                         container.innerHTML = html;
                     } else {
-                        container.innerHTML = '<p class="text-muted text-center">لا توجد ملفات حالياً</p>';
+                        container.innerHTML = '<p class="text-center text-muted">لا توجد ملفات حالياً</p>';
                     }
                 })
                 .catch((error) => {
                     console.error('Error loading files:', error);
                     document.getElementById('files-list').innerHTML = 
-                        '<p class="text-danger text-center">حدث خطأ في تحميل الملفات</p>';
+                        '<p class="text-center text-danger">حدث خطأ في تحميل الملفات</p>';
                 });
         }
 
-        // تسجيل عملية البحث
         function logSearch(nationalId, found, studentName = 'غير معروف') {
             const logData = {
                 nationalId: nationalId,
@@ -745,48 +1032,38 @@
             database.ref('searchLogs').push(logData);
         }
 
-        // نسخ النص إلى الحافظة
         function copyToClipboard(elementId, button) {
             const element = document.getElementById(elementId);
-            const textToCopy = element.textContent || element.innerText;
+            let textToCopy = element.textContent || element.innerText;
             
-            // إنشاء عنصر نصي مؤقت
-            const tempInput = document.createElement('input');
-            tempInput.value = textToCopy;
-            document.body.appendChild(tempInput);
+            // إزالة العلامات HTML من كلمة المرور
+            if (elementId === 'result-password') {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = textToCopy;
+                textToCopy = tempDiv.textContent || tempDiv.innerText || '';
+            }
             
-            // تحديد النص ونسخه
-            tempInput.select();
-            tempInput.setSelectionRange(0, 99999); // للهواتف المحمولة
-            
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    // تغيير نص الزر مؤقتاً للإشارة إلى النجاح
-                    const originalText = button.innerHTML;
-                    button.innerHTML = '<i class="fas fa-check me-1"></i>تم النسخ!';
+            // نسخ النص
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => {
+                    // تغيير مظهر الزر مؤقتاً
+                    const originalHTML = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-check"></i> تم النسخ!';
                     button.classList.add('copied');
                     
-                    // إعادة النص الأصلي بعد ثانيتين
                     setTimeout(() => {
-                        button.innerHTML = originalText;
+                        button.innerHTML = originalHTML;
                         button.classList.remove('copied');
                     }, 2000);
                     
-                    showNotification('تم نسخ النص إلى الحافظة', 'success');
-                } else {
-                    showNotification('فشل في نسخ النص', 'error');
-                }
-            } catch (err) {
-                console.error('Error copying text: ', err);
-                showNotification('حدث خطأ أثناء النسخ', 'error');
-            }
-            
-            // إزالة العنصر المؤقت
-            document.body.removeChild(tempInput);
+                    showNotification('تم النسخ', 'تم نسخ النص إلى الحافظة', 'success');
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                    showNotification('خطأ', 'فشل في نسخ النص', 'error');
+                });
         }
 
-        // طباعة بيانات الطالب
         function printStudentData() {
             const studentData = {
                 name: document.getElementById('result-name').textContent,
@@ -794,16 +1071,16 @@
                 grade: document.getElementById('result-grade').textContent,
                 code: document.getElementById('result-code').textContent,
                 email: document.getElementById('result-email').textContent,
-                password: document.getElementById('result-password').textContent
+                password: document.getElementById('result-password').textContent.replace(/<[^>]*>/g, '')
             };
             
             if (studentData.nationalId === 'غير متوفر') {
-                showNotification('لا توجد بيانات للطباعة', 'error');
+                showNotification('خطأ', 'لا توجد بيانات للطباعة', 'error');
                 return;
             }
             
             // تحديث تاريخ الطباعة
-            document.getElementById('print-date').textContent = new Date().toLocaleDateString('ar-EG') + ' - ' + 
+            document.getElementById('print-date').textContent = new Date().toLocaleDateString('ar-EG') + ' ' + 
                                                               new Date().toLocaleTimeString('ar-EG');
             
             // إنشاء محتوى الطباعة
@@ -812,75 +1089,80 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="student-info">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="info-line">
-                                        <strong>الاسم الكامل:</strong> ${studentData.name}
-                                    </div>
-                                    <div class="info-line">
-                                        <strong>الرقم القومي:</strong> ${studentData.nationalId}
-                                    </div>
-                                    <div class="info-line">
-                                        <strong>الفرقة الدراسية:</strong> ${studentData.grade}
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="info-line">
-                                        <strong>الكود الجامعي:</strong> ${studentData.code}
-                                    </div>
-                                    <div class="info-line">
-                                        <strong>البريد الإلكتروني:</strong> ${studentData.email}
-                                    </div>
-                                    <div class="info-line">
-                                        <strong>كلمة المرور:</strong> ${studentData.password}
-                                    </div>
-                                </div>
-                            </div>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th style="width: 30%;">الاسم الكامل</th>
+                                    <td>${studentData.name}</td>
+                                </tr>
+                                <tr>
+                                    <th>الرقم القومي</th>
+                                    <td>${studentData.nationalId}</td>
+                                </tr>
+                                <tr>
+                                    <th>الفرقة الدراسية</th>
+                                    <td>${studentData.grade}</td>
+                                </tr>
+                                <tr>
+                                    <th>الكود الجامعي</th>
+                                    <td>${studentData.code}</td>
+                                </tr>
+                                <tr>
+                                    <th>البريد الإلكتروني</th>
+                                    <td>${studentData.email}</td>
+                                </tr>
+                                <tr>
+                                    <th>كلمة المرور</th>
+                                    <td><strong>${studentData.password}</strong></td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
-                <style>
-                    .student-info { padding: 20px; }
-                    .info-line { 
-                        padding: 12px 15px; 
-                        margin-bottom: 10px; 
-                        background: #f8f9fa; 
-                        border-radius: 8px;
-                        border-right: 4px solid #3498db;
-                    }
-                    .info-line strong { color: #2c3e50; }
-                </style>
             `;
             
-            // إظهار منطقة الطباعة وطباعتها
+            // تأثير الزر
+            const printBtn = document.getElementById('print-btn');
+            printBtn.classList.add('pulse');
+            setTimeout(() => printBtn.classList.remove('pulse'), 1000);
+            
+            // الطباعة
             document.getElementById('printable-area').style.display = 'block';
             window.print();
             document.getElementById('printable-area').style.display = 'none';
         }
 
-        // إظهار الإشعارات
-        function showNotification(message, type) {
-            // إزالة الإشعارات القديمة
-            const oldNotifications = document.querySelectorAll('.floating-notification');
-            oldNotifications.forEach(notification => {
-                notification.remove();
-            });
-            
-            // إنشاء الإشعار الجديد
+        function showNotification(title, message, type) {
+            // إنشاء الإشعار
             const notification = document.createElement('div');
-            notification.className = `alert alert-${type} alert-dismissible floating-notification`;
+            notification.className = `notification ${type}`;
             notification.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <div class="notification-icon">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-title">${title}</div>
+                    <div class="notification-message">${message}</div>
+                </div>
+                <button class="notification-close">
+                    <i class="fas fa-times"></i>
+                </button>
             `;
             
+            // إضافة الإشعار إلى الصفحة
             document.body.appendChild(notification);
             
-            // إزالة الإشعار تلقائياً بعد 5 ثوانٍ
+            // إغلاق الإشعار عند النقر على زر الإغلاق
+            const closeBtn = notification.querySelector('.notification-close');
+            closeBtn.addEventListener('click', () => {
+                notification.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => notification.remove(), 300);
+            });
+            
+            // إزالة الإشعار تلقائياً بعد 5 ثوان
             setTimeout(() => {
                 if (notification.parentNode) {
-                    notification.remove();
+                    notification.style.animation = 'slideIn 0.3s ease-out reverse';
+                    setTimeout(() => notification.remove(), 300);
                 }
             }, 5000);
         }
